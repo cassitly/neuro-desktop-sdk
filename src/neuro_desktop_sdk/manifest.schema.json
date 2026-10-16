@@ -1,0 +1,40 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Neuro Desktop integration manifest v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_version", "id", "name", "version", "kind", "permissions", "settings_schema", "game_ids", "neuro_api"],
+  "properties": {
+    "schema_version": {"const": 1},
+    "id": {"$ref": "#/$defs/id"},
+    "name": {"type": "string", "minLength": 1, "maxLength": 120},
+    "version": {"type": "string", "minLength": 1, "maxLength": 64},
+    "kind": {"enum": ["integration", "extension", "game", "discord"]},
+    "permissions": {
+      "type": "array", "maxItems": 32,
+      "items": {
+        "type": "object", "additionalProperties": false,
+        "required": ["id", "description", "required"],
+        "properties": {
+          "id": {"$ref": "#/$defs/id"},
+          "description": {"type": "string", "minLength": 1, "maxLength": 500},
+          "required": {"type": "boolean"}
+        }
+      }
+    },
+    "settings_schema": {
+      "type": "object",
+      "anyOf": [
+        {"maxProperties": 0},
+        {"required": ["type"], "properties": {"type": {"const": "object"}}}
+      ]
+    },
+    "game_ids": {"type": "array", "maxItems": 32, "uniqueItems": true, "items": {"$ref": "#/$defs/id"}},
+    "neuro_api": {
+      "type": "object", "additionalProperties": false,
+      "properties": {"game_name": {"type": "string", "minLength": 1, "maxLength": 120}},
+      "anyOf": [{"maxProperties": 0}, {"required": ["game_name"]}]
+    }
+  },
+  "$defs": {"id": {"type": "string", "pattern": "^[a-z0-9][a-z0-9._-]{0,63}$"}}
+}
