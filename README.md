@@ -1,6 +1,6 @@
-# Neurcro SDK
+# Neuro Desktop SDK
 
-Add scoped lifecycle and curated viewer activity to an existing integration. Your existing connection to [VedalAI's official Neuro API](https://github.com/VedalAI/neuro-sdk/blob/main/API/SPECIFICATION.md) keeps handling game context, actions and results. This package supplies the local Neurcro manifest, Games-tab readiness and optional viewer feed. It has no runtime dependencies and supports Python 3.10+ on Windows, macOS and Linux.
+Add scoped lifecycle and curated viewer activity to an existing integration. Your existing connection to [VedalAI's official Neuro API](https://github.com/VedalAI/neuro-sdk/blob/main/API/SPECIFICATION.md) keeps handling game context, actions and results. This package supplies the local Neuro Desktop manifest, Games-tab readiness and optional viewer feed. It has no runtime dependencies and supports Python 3.10+ on Windows, macOS and Linux.
 
 This is a standalone repository. Its `.github/workflows/ci.yml` tests the package on Windows, macOS and Linux. Installation here does not imply a PyPI release exists.
 
@@ -23,9 +23,9 @@ with Heartbeat(client):
 client.close()
 ```
 
-`scoped_token` comes from your local Neurcro registration. Keep it in your process's memory or your own secret storage; never commit it, put it in a URL or pass an administrator token to this SDK. `close()` forgets the client's token reference. Heartbeat helpers hide viewer history before sending `offline` on shutdown. If a process disappears, readiness expires after 45 seconds. Heartbeats run every 15 seconds, use one worker and never overlap.
+`scoped_token` comes from your local Neuro Desktop registration. Keep it in your process's memory or your own secret storage; never commit it, put it in a URL or pass an administrator token to this SDK. `close()` forgets the client's token reference. Heartbeat helpers hide viewer history before sending `offline` on shutdown. If a process disappears, readiness expires after 45 seconds. Heartbeats run every 15 seconds, use one worker and never overlap.
 
-## Register and approve it in Neurcro
+## Register and approve it in Neuro Desktop
 
 Use your local manager's integration registration and permission controls. For an administrative tool you operate directly, the equivalent HTTP contract is:
 
@@ -38,9 +38,9 @@ Use your local manager's integration registration and permission controls. For a
 
 The token response is `{"ok":true,"id":"…","kind":"integration" or "viewer","token":"…"}`. Save its token once. Minting a replacement rotates that credential and hides the viewer feed. An integration token publishes only for its own ID; a viewer token only reads that ID's feed. The SDK deliberately contains no administrator client and cannot grant itself anything.
 
-Approve required declared capabilities before connecting, and enable the global `extensions` permission. `run_allowed` enables ND's managed runtime lease. `manage_allowed` separately delegates management operations to Neuro; it is not needed for heartbeats. For an optional viewer feed, declare `discord.viewer` and grant it explicitly: `"grants":{"discord.viewer":true}`. Settings must match the declared settings schema. Per-item grants supplement Neurcro's global control/permission checks and do not sandbox an external executable's OS access.
+Approve required declared capabilities before connecting, and enable the global `extensions` permission. `run_allowed` enables ND's managed runtime lease. `manage_allowed` separately delegates management operations to Neuro; it is not needed for heartbeats. For an optional viewer feed, declare `discord.viewer` and grant it explicitly: `"grants":{"discord.viewer":true}`. Settings must match the declared settings schema. Per-item grants supplement Neuro Desktop's global control/permission checks and do not sandbox an external executable's OS access.
 
-For dedicated game controls, your existing backend still uses the official API. The official `game` name is recorded in `neuro_api.game_name`; this SDK never changes that connection or forwards its credentials. A live approved heartbeat links the adapter to matching `game_ids` in Neurcro's Games tab, allowing dedicated integration control to take precedence without pretending a stale process is ready.
+For dedicated game controls, your existing backend still uses the official API. The official `game` name is recorded in `neuro_api.game_name`; this SDK never changes that connection or forwards its credentials. A live approved heartbeat links the adapter to matching `game_ids` in Neuro Desktop's Games tab, allowing dedicated integration control to take precedence without pretending a stale process is ready.
 
 Read `client.configuration()` to obtain only your own `manifest`, approved `settings`, effective `grants` and `run_allowed` through scoped `GET /api/integrations/{id}/config`. You cannot modify them. Heartbeat responses also carry current settings/grants; `heartbeat.last_response` holds the latest successful response so frequent operations can use a recent snapshot without another poll. Keep secrets outside settings. Your adapter implements its declared settings: the example checks the opt-in `publish_curated_activity` setting and `discord.viewer` grant before publishing, while the server independently enforces current permissions and visibility.
 
@@ -87,7 +87,7 @@ Runtime requests use `X-ND-Integration-Token` only:
 | `activity` | `{"actor":"neuro" or "evil","kind":"status" or "discord.channel" or "discord.message" or "discord.voice","summary":"curated text"}` |
 | `hide` | `{}` |
 
-`ViewerClient(id, viewer_token).snapshot()` sends only `X-ND-Viewer-Token` to `GET /api/viewer/{id}`. Its result has `visible`, optional `actor`, and `items` with `seq`, `time`, `actor`, `kind` and `summary`. When hidden or stale, `visible` is false and `items` is empty. For OBS, use Neurcro's local `/viewer/` overlay with the separately issued viewer token in its URL fragment, never a query string; the overlay keeps it only in memory. A viewer token is a read capability: keep the source URL out of public chat.
+`ViewerClient(id, viewer_token).snapshot()` sends only `X-ND-Viewer-Token` to `GET /api/viewer/{id}`. Its result has `visible`, optional `actor`, and `items` with `seq`, `time`, `actor`, `kind` and `summary`. When hidden or stale, `visible` is false and `items` is empty. For OBS, use Neuro Desktop's local `/viewer/` overlay with the separately issued viewer token in its URL fragment, never a query string; the overlay keeps it only in memory. A viewer token is a read capability: keep the source URL out of public chat.
 
 By default the client accepts HTTP(S) loopback origins only. Remote origins require both HTTPS and `allow_remote=True`. URLs containing paths, embedded credentials, queries or fragments are rejected. Redirects and ambient proxies are disabled to avoid forwarding scoped tokens; responses are capped at 256 KiB. An `SDKError` contains a generic message and optional HTTP `status`, never a token or response body. A 403 means to check your per-item approvals, visibility and global controls. A missing server is retried by the heartbeat worker; inspect `heartbeat.last_error` if you want to show diagnostics.
 
