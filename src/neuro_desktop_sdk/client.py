@@ -83,21 +83,21 @@ class _ScopedClient:
                 content = response.read(MAX_RESPONSE_BYTES + 1)
         except HTTPError as exc:
             exc.close()
-            raise SDKError(f"Neuro Desktop denied the request (HTTP {exc.code}); check this integration's enablement and grants", status=exc.code) from None
+            raise SDKError(f"Neurcro denied the request (HTTP {exc.code}); check this integration's enablement and grants", status=exc.code) from None
         except (URLError, TimeoutError, socket.timeout, OSError):
-            raise SDKError("Cannot reach Neuro Desktop within the configured timeout") from None
+            raise SDKError("Cannot reach Neurcro within the configured timeout") from None
         except HTTPException:
             # A truncated chunked response raises IncompleteRead here rather
             # than OSError. Keep it within the heartbeat worker's retry contract.
-            raise SDKError("Neuro Desktop returned an incomplete or invalid HTTP response") from None
+            raise SDKError("Neurcro returned an incomplete or invalid HTTP response") from None
         if len(content) > MAX_RESPONSE_BYTES:
-            raise SDKError("Neuro Desktop response exceeded 256 KiB")
+            raise SDKError("Neurcro response exceeded 256 KiB")
         try:
             result = json.loads(content)
         except (ValueError, UnicodeError, RecursionError):
-            raise SDKError("Neuro Desktop returned invalid JSON") from None
+            raise SDKError("Neurcro returned invalid JSON") from None
         if not isinstance(result, dict):
-            raise SDKError("Neuro Desktop response must be an object")
+            raise SDKError("Neurcro response must be an object")
         return result
 
     def close(self) -> None:
@@ -109,7 +109,7 @@ class IntegrationClient(_ScopedClient):
     """Publish lifecycle and already-curated viewer activity for one registration.
 
     This client has no import/install, token-minting, policy or self-grant API.
-    Register the manifest and approve permissions in Neuro Desktop first.
+    Register the manifest and approve permissions in Neurcro first.
     """
 
     def configuration(self) -> dict[str, Any]:

@@ -1,6 +1,6 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "title": "Neuro Desktop integration manifest v1",
+  "title": "Neurcro integration manifest v1",
   "type": "object",
   "additionalProperties": false,
   "required": ["schema_version", "id", "name", "version", "kind", "permissions", "settings_schema", "game_ids", "neuro_api"],

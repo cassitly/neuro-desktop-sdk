@@ -11,7 +11,7 @@ from .manifest import clean_text
 
 
 class Heartbeat:
-    """Send every 15 seconds; Neuro Desktop expires readiness after 45 seconds.
+    """Send every 15 seconds; Neurcro expires readiness after 45 seconds.
 
     ``start`` sends once synchronously so a missing grant is visible immediately.
     Transient errors are retained as ``last_error`` and retried next interval.

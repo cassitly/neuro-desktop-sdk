@@ -1,4 +1,4 @@
-"""Neuro Desktop lifecycle SDK, separate from the official Neuro game API."""
+"""Neurcro lifecycle SDK, separate from the official Neuro game API."""
 
 from .client import ActivityKind, Actor, IntegrationClient, SDKError, State, ViewerClient
 from .heartbeat import Heartbeat

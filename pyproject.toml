@@ -5,11 +5,11 @@ build-backend = "setuptools.build_meta"
 [project]
 name = "neuro-desktop-sdk"
 version = "0.1.0"
-description = "Scoped local lifecycle and viewer activity helpers for Neuro Desktop integrations"
+description = "Scoped local lifecycle and viewer activity helpers for Neurcro integrations"
 readme = "README.md"
 requires-python = ">=3.10"
 license = "MIT"
-authors = [{name = "Neuro Desktop contributors"}]
+authors = [{name = "Neurcro contributors"}]
 dependencies = []
 classifiers = [
     "Programming Language :: Python :: 3",
